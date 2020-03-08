@@ -78,7 +78,10 @@ namespace IA_TP2_Sudoku_solver
             int size = sudoku.state.GetLength(0);
             int cellNumber = size * size;
 
-            foreach (int value in sudoku.domain[var.Item1, var.Item2])
+            int[] values = leastConstrainingValue(var.Item1, var.Item2, sudoku);
+
+            //foreach (int value in sudoku.domain[var.Item1, var.Item2])
+            foreach (int value in values)
             {
                 //int val = leastConstrainingValue(var.Item1, var.Item2, sudoku.state, sudoku.domain, sudoku.constraints);
 
@@ -247,38 +250,46 @@ namespace IA_TP2_Sudoku_solver
 
         // Least constraining value
         // Return the value which constraints the less the csp, avoid impossible csp
-        public int leastConstrainingValue(int x, int y, int[,] state, int[,][] domain, List<Constraint> constraints)
+        public int[] leastConstrainingValue(int x, int y, Sudoku sudoku)
         {
-            int val = 0;
-            int poss = 0;
-            int[,][] domainCopy;
+            List<Tuple<int, int>> l = new List<Tuple<int, int>>();
 
-            int size = state.GetLength(0);
+            int size = sudoku.state.GetLength(0);
             int cellNumber = size * size;
             int line_index = y + x * size;
             int column_index = line_index + cellNumber;
             int block_index = column_index + cellNumber;
 
-            foreach (int value in domain[x, y])
+            foreach (int value in sudoku.domain[x, y])
             {
-                domainCopy = (int[,][])domain.Clone();
                 int compt = 0;
 
-                domainCopy[x, y] = new int[] { value };
+                sudoku.state[x, y] = value;
 
-                domainCopy = constraints[line_index].update(value, state, domainCopy);
-                domainCopy = constraints[column_index].update(value, state, domainCopy);
-                domainCopy = constraints[block_index].update(value, state, domainCopy);
+                sudoku.domainCopy[x, y] = new int[] { value };
+                sudoku.domainCopy = sudoku.constraints[line_index].update(value, sudoku.state, sudoku.domainCopy);
+                sudoku.domainCopy = sudoku.constraints[column_index].update(value, sudoku.state, sudoku.domainCopy);
+                sudoku.domainCopy = sudoku.constraints[block_index].update(value, sudoku.state, sudoku.domainCopy);
 
-                compt = getNumberValues(domainCopy);
+                compt = getNumberValues(sudoku.domainCopy);
 
-                // Get the maximum available values in the csp
-                if (compt > poss)
-                {
-                    val = value;
-                    poss = compt;
-                }
+                l.Add(Tuple.Create(compt, value));
+
+                // Reset
+                sudoku.state[x, y] = 0;
+                sudoku.syncDomaintoCopy();
             }
+
+            // Sort compt
+            l.Sort(Comparer<Tuple<int, int>>.Default);
+
+            // Get the value by desc compt
+            int[] val = new int[l.Count];
+            for (int i = l.Count-1; i >= 0; i--)
+            {
+                val[l.Count - 1 - i] = l[i].Item2;
+            }
+
             return val;
         }
 
