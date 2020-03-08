@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "IA-TP2-Sudoku-solver/1.0.0": {
+        "runtime": {
+          "IA-TP2-Sudoku-solver.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "IA-TP2-Sudoku-solver/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
