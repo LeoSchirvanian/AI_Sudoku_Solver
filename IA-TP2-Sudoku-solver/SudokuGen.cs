@@ -8,6 +8,7 @@ namespace IA_TP2_Sudoku_solver
     {
         // Attributes
         private SudokuGeneration.Grid grid { get; }
+        private Random random = new Random();
 
         // Constructor
         public SudokuGen(int size)
@@ -46,5 +47,7 @@ namespace IA_TP2_Sudoku_solver
 
         // --------------------------------------------------------------------------------------------------------------- //
         // --------------------------------------------------------------------------------------------------------------- //
+
+        
     }
 }

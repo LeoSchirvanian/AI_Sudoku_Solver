@@ -7,7 +7,7 @@ namespace IA_TP2_Sudoku_solver.SudokuGeneration
     class Grid
     {
         // Attributes
-        public int[,] state { get; }
+        public int[,] state { get; set; }
         public int[,] initialstate { get;}
         public GridDomain griddomain { get; }
         private Random random = new Random();
@@ -39,14 +39,41 @@ namespace IA_TP2_Sudoku_solver.SudokuGeneration
                 int cell = random.Next(blockSize * blockSize); ;
                 int value = -1;
 
+                int clues = 0;
+                int poss = 0;
+
+                
+                switch (blockSize)
+                {
+                    case 2:
+                        clues = blockSize * blockSize;
+                        poss = 0;
+                        break;
+
+                    case 3:
+                        clues = blockSize * blockSize;
+                        poss = 0;
+                        break;
+
+                    default:
+                        clues = blockSize+1;
+                        poss = 1;
+                        break;
+                }
+
+                /*
+                clues = blockSize * blockSize;
+                poss = 0;
+                */
+                
                 // Count the number of fails, if too big : stop the program and reload the function
                 int failed = 0;
                 // Maximum errors allowed
-                int err = 10;
+                int err = 100;
 
                 // While we don't have n clues in this block
-                // ( (blockSize / 2) * 2)
-                while (compt < blockSize)
+                
+                while (compt < clues)
                 {
                     // Check if the random cell is already filled with a number
                     while (state[block[cell].Item1, block[cell].Item2] != 0)
@@ -61,7 +88,7 @@ namespace IA_TP2_Sudoku_solver.SudokuGeneration
                     if (b == true)
                     {
                         // Update the value
-                        int u = update(block[cell].Item1, block[cell].Item2, value, blockSize, blockSize);
+                        int u = update(block[cell].Item1, block[cell].Item2, value, blockSize, poss);
 
                         // If the update doesn't lead to an impossible sudoku we apply the change and increment compt
                         if (u == 1)
@@ -104,6 +131,15 @@ namespace IA_TP2_Sudoku_solver.SudokuGeneration
 
                 }
             }
+
+            
+            if(blockSize == 3 || blockSize == 2)
+            {
+                state = normalize(state);
+            }
+            
+
+            //state = normalize(state);
 
             // We achieve to generate a correct sudoku
             return 1;
@@ -255,6 +291,34 @@ namespace IA_TP2_Sudoku_solver.SudokuGeneration
 
                 return 1;
             }
+        }
+
+        // --------------------------------------------------------------------------------------------------------------- //
+        // --------------------------------------------------------------------------------------------------------------- //
+
+        public int[,] normalize(int[,] state)
+        {
+            int size = state.GetLength(0);
+            int compt = 0;
+            int lim = size * size - ((int)Math.Sqrt(size)) * (size - ((int)Math.Sqrt(size)));
+            lim = random.Next(lim - size, lim + 1);
+
+            int i = 0;
+            int j = 0;
+
+            while (compt < lim)
+            {
+                i = random.Next(size);
+                j = random.Next(size);
+
+                if (state[i, j] != 0)
+                {
+                    state[i, j] = 0;
+                    compt++;
+                }
+
+            }
+            return state;
         }
 
         // --------------------------------------------------------------------------------------------------------------- //
