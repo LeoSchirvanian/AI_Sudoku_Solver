@@ -56,8 +56,8 @@ namespace IA_TP2_Sudoku_solver.SudokuGeneration
                         break;
 
                     default:
-                        clues = blockSize+1;
-                        poss = 1;
+                        clues = blockSize;
+                        poss = 2;
                         break;
                 }
 

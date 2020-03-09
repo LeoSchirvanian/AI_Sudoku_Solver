@@ -73,7 +73,7 @@ namespace IA_TP2_Sudoku_solver
 
             // Select unassigned variables
             // Choose variable with MRV and degree heuristic
-            Tuple<int, int> var = minimumRemainingvalues(sudoku.state, sudoku.domain, sudoku.constraints);
+            Tuple<int, int> var = minimumRemainingvalues(sudoku);
 
             int size = sudoku.state.GetLength(0);
             int cellNumber = size * size;
@@ -150,22 +150,22 @@ namespace IA_TP2_Sudoku_solver
 
         // Minimum remainingvalues (MRV)
         // Return the variable with the fewest values possible in the csp
-        public Tuple<int,int> minimumRemainingvalues(int[,] state, int[,][] domain, List<Constraint> constraints)
+        public Tuple<int,int> minimumRemainingvalues(Sudoku sudoku)
         {
             List<Tuple<int, int>> l = new List<Tuple<int, int>>();
-            int lowestValues = state.GetLength(0) + 1;
+            int lowestValues = sudoku.state.GetLength(0) + 1;
             int x = 0;
             int y = 0;
 
-            for (int i = 0; i < state.GetLength(0); i++)
+            for (int i = 0; i < sudoku.state.GetLength(0); i++)
             {
-                for (int j = 0; j < state.GetLength(1); j++)
+                for (int j = 0; j < sudoku.state.GetLength(1); j++)
                 {
                     // Get unassigned variable
-                    if (state[i,j] == 0)
+                    if (sudoku.state[i,j] == 0)
                     {
                         int len = 0;
-                        len = domain[i, j].Length;
+                        len = sudoku.domain[i, j].Length;
 
                         if (len < lowestValues)
                         {
@@ -189,7 +189,7 @@ namespace IA_TP2_Sudoku_solver
             // If conflict, call degree heuristic
             if (l.Count > 1)
             {
-                return degreeHeuristic(l, state, domain, constraints);
+                return degreeHeuristic(l, sudoku);
             }
             else
             {
@@ -204,13 +204,13 @@ namespace IA_TP2_Sudoku_solver
 
         // Degree heuristic
         // Return the variable with the most impactful constraints on the csp if conflict on MRV
-        public Tuple<int, int> degreeHeuristic(List<Tuple<int, int>> l, int[,] state, int[,][] domain, List<Constraint> constraints)
+        public Tuple<int, int> degreeHeuristic(List<Tuple<int, int>> l, Sudoku sudoku)
         {
             int maxConstraints = 0;
             int x = 0;
             int y = 0;
 
-            int size = state.GetLength(0);
+            int size = sudoku.state.GetLength(0);
             int cellNumber = size * size;
 
             int line_index = 0;
@@ -229,9 +229,9 @@ namespace IA_TP2_Sudoku_solver
                 column_index = line_index + cellNumber;
                 block_index = column_index + cellNumber;
 
-                compt += constraints[line_index].constraints(state);
-                compt += constraints[column_index].constraints(state);
-                compt += constraints[block_index].constraints(state);
+                compt += sudoku.constraints[line_index].constraints(sudoku.state);
+                compt += sudoku.constraints[column_index].constraints(sudoku.state);
+                compt += sudoku.constraints[block_index].constraints(sudoku.state);
 
                 if (compt > maxConstraints)
                 {
