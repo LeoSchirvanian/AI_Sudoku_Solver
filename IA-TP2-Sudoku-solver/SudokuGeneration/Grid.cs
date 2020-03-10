@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IA_TP2_Sudoku_solver.SudokuGeneration
 {
+    // Generate a random sudoku grid
     class Grid
     {
         // Attributes
@@ -25,7 +24,8 @@ namespace IA_TP2_Sudoku_solver.SudokuGeneration
         // --------------------------------------------------------------------------------------------------------------- //
 
         // Generate randomly a sudoku
-        // We assume a sudoku n*n only need n clues in each block 
+        // For sudoku of size 2 or 3, we generate first a correct sudoku and then remove randomly some values
+        // For sudoku of size > 3, we assume that a sudoku n*n only need n clues in each block 
         // To generate a sudoku we are going to add randomly n clues in each block
         // If there are too many fails, we assume that we have generate an impossible sudoku and the method failed
         // Return 0 if we failed or 1 if we achieved
@@ -42,7 +42,6 @@ namespace IA_TP2_Sudoku_solver.SudokuGeneration
                 int clues = 0;
                 int poss = 0;
 
-                
                 switch (blockSize)
                 {
                     case 2:
@@ -60,11 +59,6 @@ namespace IA_TP2_Sudoku_solver.SudokuGeneration
                         poss = 2;
                         break;
                 }
-
-                /*
-                clues = blockSize * blockSize;
-                poss = 0;
-                */
                 
                 // Count the number of fails, if too big : stop the program and reload the function
                 int failed = 0;
@@ -72,7 +66,6 @@ namespace IA_TP2_Sudoku_solver.SudokuGeneration
                 int err = 100;
 
                 // While we don't have n clues in this block
-                
                 while (compt < clues)
                 {
                     // Check if the random cell is already filled with a number
@@ -131,15 +124,12 @@ namespace IA_TP2_Sudoku_solver.SudokuGeneration
 
                 }
             }
-
             
+            // Remove random values for sudoku of size 2 or 3
             if(blockSize == 3 || blockSize == 2)
             {
                 state = normalize(state);
             }
-            
-
-            //state = normalize(state);
 
             // We achieve to generate a correct sudoku
             return 1;
@@ -296,6 +286,7 @@ namespace IA_TP2_Sudoku_solver.SudokuGeneration
         // --------------------------------------------------------------------------------------------------------------- //
         // --------------------------------------------------------------------------------------------------------------- //
 
+        // Randomly remove a number 'lim' of values in a correct and complete sudoku grid 
         public int[,] normalize(int[,] state)
         {
             int size = state.GetLength(0);

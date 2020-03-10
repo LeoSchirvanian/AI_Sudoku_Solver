@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
 
 namespace IA_TP2_Sudoku_solver
 {
@@ -20,13 +18,11 @@ namespace IA_TP2_Sudoku_solver
         {
             state = (int[,])initial_state.Clone();
             initState = (int[,])initial_state.Clone();
-
             constraints = generateSudokuConstraints();
 
             // Init domain 
             domain = createDomain();
             domain = initDomain(state, domain);
-
             domainCopy = createDomain();
             domainCopy = initDomain(state, domainCopy);
 
@@ -49,72 +45,6 @@ namespace IA_TP2_Sudoku_solver
             constraints.AddRange(generateBlockConstraints());
 
             return constraints;
-        }
-
-        // --------------------------------------------------------------------------------------------------------------- //
-        // --------------------------------------------------------------------------------------------------------------- //
-
-        // Return domain
-        public int[,][] getDomain()
-        {
-            return domain;
-        }
-
-        // --------------------------------------------------------------------------------------------------------------- //
-        // --------------------------------------------------------------------------------------------------------------- //
-
-        // Update domain
-        public void updateDomain()
-        {
-
-        }
-
-        // --------------------------------------------------------------------------------------------------------------- //
-        // --------------------------------------------------------------------------------------------------------------- //
-
-        public int[,][] getDomain(int[,] sudoku_state)
-        {
-            int[,][] ndom = new int[sudoku_state.GetLength(0), sudoku_state.GetLength(1)][];
-            for (int i = 0; i < sudoku_state.GetLength(0); i++)
-            {
-                for (int j = 0; j < sudoku_state.GetLength(1); j++)
-                {
-                    int[,] scopy = (int[,])sudoku_state.Clone();
-                    List<int> domrow = new List<int>();
-
-                    for (int k = 0; k < sudoku_state.GetLength(0); k++)
-                    {
-                        scopy[i, j] = k;
-
-                        if (isConsistent(scopy))
-                        {
-                            domrow.Add(k);
-                        }
-                    }
-
-                    ndom[i, j] = domrow.ToArray();
-                }
-            }
-
-            return ndom;
-
-        }
-
-        // --------------------------------------------------------------------------------------------------------------- //
-        // --------------------------------------------------------------------------------------------------------------- //
-
-        // Check if each constraints are respected in the csp
-        public bool isConsistent(int[,] sudoku_state)
-        {
-            foreach (Constraint constraint in constraints)
-            {
-                if (!constraint.check(state))
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         // --------------------------------------------------------------------------------------------------------------- //
@@ -177,29 +107,6 @@ namespace IA_TP2_Sudoku_solver
         // --------------------------------------------------------------------------------------------------------------- //
         // --------------------------------------------------------------------------------------------------------------- //
 
-        // Check domain
-        private bool check(int x, int y, int v)
-        {
-            // Check if v is an allowed value for the variable cell x,y
-            return domain[x, y].Contains(v);
-        }
-
-        /*
-        private bool update(int x, int y, int v)
-        {
-            if( check(x, y, v) )
-            {
-                for (int i = 0; i < state.GetLength(0); i++)
-                {
-
-                }
-            }
-        }
-        */
-
-        // --------------------------------------------------------------------------------------------------------------- //
-        // --------------------------------------------------------------------------------------------------------------- //
-
         // Create the domain of the sudoku
         public int[,][] createDomain()
         {
@@ -223,7 +130,9 @@ namespace IA_TP2_Sudoku_solver
             return domain;
         }
 
-        
+        // --------------------------------------------------------------------------------------------------------------- //
+        // --------------------------------------------------------------------------------------------------------------- //
+
         // Init the domain given a generated state
         public int[,][] initDomain(int[,] state, int[,][] domain)
         {
@@ -253,6 +162,9 @@ namespace IA_TP2_Sudoku_solver
             return domain;
         }
 
+        // --------------------------------------------------------------------------------------------------------------- //
+        // --------------------------------------------------------------------------------------------------------------- //
+
         // Synchronize state with sudoku generator state
         public void syncDomaintoCopy()
         {
@@ -264,127 +176,6 @@ namespace IA_TP2_Sudoku_solver
                 }
             }
         }
-
-
-        // --------------------------------------------------------------------------------------------------------------- //
-        // --------------------------------------------------------------------------------------------------------------- //
-
-        /*
-        public void printGridState(int size)
-        {
-
-            // Get grid matrix state
-            string line;
-
-            for (int i = 0; i < state.GetLength(0); i++)
-            {
-                if (i % size == 0)
-                {
-                    Console.WriteLine("*---------------------------------*");
-                }
-                line = "";
-                for (int j = 0; j < state.GetLength(1); j++)
-                {
-                    if (j % size == 0)
-                    {
-                        line += " | " + state[i, j].ToString() + ' ';
-                    }
-                    else
-                    {
-                        line += ' ' + state[i, j].ToString() + ' ';
-                    }
-
-                }
-
-                line += '|';
-
-                Console.WriteLine(line);
-            }
-
-            Console.WriteLine("*---------------------------------*");
-        }
-
-        /*
-        // --------------------------------------------------------------------------------------------------------------- //
-        // --------------------------------------------------------------------------------------------------------------- //
-
-        // Synchronize state with sudoku generator state
-        private void syncStateSG()
-        {
-            for (int i = 0; i < state.GetLength(0); i++)
-            {
-                for (int j = 0; j < state.GetLength(1); j++)
-                {
-                    state[i, j] = sg.state[i, j];
-                }
-            }
-        }
-
-        // Synchronize initState with sudoku generator state
-        private void syncInitStateSG()
-        {
-            for (int i = 0; i < state.GetLength(0); i++)
-            {
-                for (int j = 0; j < state.GetLength(1); j++)
-                {
-                    initState[i, j] = state[i, j];
-                }
-            }
-        }
-
-        // --------------------------------------------------------------------------------------------------------------- //
-        // --------------------------------------------------------------------------------------------------------------- //
-
-        // Synchronize domain with sudoku generator state
-        private void syncDomainSG()
-        {
-            for (int i = 0; i < state.GetLength(0); i++)
-            {
-                for (int j = 0; j < state.GetLength(0); j++)
-                {
-
-                    // If the cell has a value, then the domain is the value
-                    if(state[i,j] != 0)
-                    {
-                        int[] values = new int[1];
-                        values[0] = state[i, j];
-                        domain[i, j] = values;
-                    }
-
-                    // If not, get the possibilities in a new list
-                    else
-                    {
-                        // Get size of domain
-                        int size = 0;
-                        for (int k = 0; k < domain.GetLength(2); k++)
-                        {
-                            if(domain[i, j, k] == 1)
-                            {
-                                size++;
-                            }
-                        }
-
-                        int[] values = new int[size];
-
-                        // Fill domain
-                        int compt = 0;
-                        for (int k = 0; k < domain.GetLength(2); k++)
-                        {
-                            if (domain[i, j, k] == 1)
-                            {
-                                values[compt] = k + 1;
-                                compt++;
-                            }
-                        }
-
-                        domain[i, j] = values;
-
-
-                    }
-                }
-            }
-        }
-        */
 
         // --------------------------------------------------------------------------------------------------------------- //
         // --------------------------------------------------------------------------------------------------------------- //

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using System.Diagnostics;
 
 
 namespace IA_TP2_Sudoku_solver
 {
+    // Solve a given sudoku if possible
     class Solver
     {
         // Attributes
@@ -24,13 +24,16 @@ namespace IA_TP2_Sudoku_solver
         // --------------------------------------------------- METHODS --------------------------------------------------- //
         // --------------------------------------------------------------------------------------------------------------- //
 
+        // Solve the sudoku
         public void solve()
         {
+            // Start time
             Stopwatch sw = Stopwatch.StartNew();
 
             Console.WriteLine("Before :");
             printGridState(initialstate);
 
+            // If backtracking search achieved
             if (backtracking_search(sudoku))
             {
                 Console.WriteLine("\nWe solve the sudoku !");
@@ -38,11 +41,13 @@ namespace IA_TP2_Sudoku_solver
                 Console.WriteLine("\nAfter :");
                 printGridState(sudoku.state);
             }
+            // If not
             else
             {
                 Console.WriteLine("\nImpossible to solve !");
             }
 
+            // Stop time and print execution time
             sw.Stop();
             Console.WriteLine("\nTime taken: {0}s", sw.Elapsed.TotalMilliseconds / 1000);
         }
@@ -78,13 +83,11 @@ namespace IA_TP2_Sudoku_solver
             int size = sudoku.state.GetLength(0);
             int cellNumber = size * size;
 
+            // Select the values, ordering them with the leastConstrainingValue algorithm
             int[] values = leastConstrainingValue(var.Item1, var.Item2, sudoku);
 
-            //foreach (int value in sudoku.domain[var.Item1, var.Item2])
             foreach (int value in values)
             {
-                //int val = leastConstrainingValue(var.Item1, var.Item2, sudoku.state, sudoku.domain, sudoku.constraints);
-
                 int line_index = var.Item2 + var.Item1 * size;
                 int column_index = line_index + cellNumber;
                 int block_index = column_index + cellNumber;
@@ -93,7 +96,6 @@ namespace IA_TP2_Sudoku_solver
                 if (sudoku.constraints[line_index].isConsistent(value, sudoku.state) & sudoku.constraints[column_index].isConsistent(value, sudoku.state) & sudoku.constraints[block_index].isConsistent(value, sudoku.state))
                 {
                     sudoku.assgn.assgn.Add(Tuple.Create(var.Item1, var.Item2, value));
-
 
                     // Update
                     sudoku.state[var.Item1, var.Item2] = value;
@@ -120,29 +122,9 @@ namespace IA_TP2_Sudoku_solver
                     sudoku.domain = sudoku.createDomain();
                     sudoku.domain = sudoku.initDomain(sudoku.state, sudoku.domain);
 
-                    
-                    
-                    /*
-                    sudoku.domain = sudoku.constraints[line_index].remove(value, sudoku.state, sudoku.domain, hist);
-                    sudoku.domain = sudoku.constraints[column_index].remove(value, sudoku.state, sudoku.domain, hist);
-                    sudoku.domain = sudoku.constraints[block_index].remove(value, sudoku.state, sudoku.domain, hist);
-                    */
-
-                    // Remove the update
-
                 }
             }
-
             return false;
-            // Select the value which constraints the less the csp, avoid impossible csp
-            
-
-            // For each value allowed
-            // Is consistent ?
-
-            // If consistent add to assgn
-
-            // Call recursive_backtracking with the new assignment
         }
 
         // --------------------------------------------------------------------------------------------------------------- //
@@ -249,7 +231,7 @@ namespace IA_TP2_Sudoku_solver
         // --------------------------------------------------------------------------------------------------------------- //
 
         // Least constraining value
-        // Return the value which constraints the less the csp, avoid impossible csp
+        // Return a list of values, ordering them by descending order of constraining values (given by getNumberValues method)
         public int[] leastConstrainingValue(int x, int y, Sudoku sudoku)
         {
             List<Tuple<int, int>> l = new List<Tuple<int, int>>();
@@ -296,7 +278,7 @@ namespace IA_TP2_Sudoku_solver
         // --------------------------------------------------------------------------------------------------------------- //
         // --------------------------------------------------------------------------------------------------------------- //
 
-        // Return the total number of allowed values for each variables (usefull for degree heuristic method)
+        // Return the total number of allowed values for each variables (usefull for leastConstrainingValue method)
         public int getNumberValues(int[,][] domain)
         {
             int compt = 0;
@@ -316,10 +298,10 @@ namespace IA_TP2_Sudoku_solver
         // --------------------------------------------------------------------------------------------------------------- //
         // --------------------------------------------------------------------------------------------------------------- //
 
+        // AC3 algorithm to prune our csp domain before beginning a loop of recursive backtracking search
         public void AC3(Sudoku sudoku)
         {
             Queue<Tuple<Tuple<int, int>, Tuple<int, int>>> queue = new Queue<Tuple<Tuple<int, int>, Tuple<int, int>>>();
-            // TODO : Need to generate the queue
 
             // Get all the node unassigned
             List<Tuple<int, int>> node = new List<Tuple<int, int>>();
@@ -389,6 +371,7 @@ namespace IA_TP2_Sudoku_solver
         // --------------------------------------------------------------------------------------------------------------- //
         // --------------------------------------------------------------------------------------------------------------- //
 
+        // Remove domain values of variable Xi if there are inconsistent with variable Xj
         public bool removeInconsistentValues(Sudoku sudoku, Tuple<int,int> Xi, Tuple<int, int> Xj)
         {
             bool removed = false;
@@ -438,19 +421,6 @@ namespace IA_TP2_Sudoku_solver
 
             return b;
 
-        }
-
-        public int[,][] deepCopy(int[,][] array)
-        {
-            int[,][] copy = new int[array.GetLength(0), array.GetLength(1)][];
-            for (int i = 0; i < array.GetLength(0); i++)
-            {
-                for (int j = 0; j < array.GetLength(0); j++)
-                {
-                    copy[i, j] = array[i, j];
-                }
-            }
-            return copy;
         }
 
         // --------------------------------------------------------------------------------------------------------------- //

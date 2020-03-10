@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
 
 namespace IA_TP2_Sudoku_solver
 {
+    // Interface of the constraints of a sudoku
     interface Constraint
     {
         public bool check(int[,] state);
@@ -12,7 +11,5 @@ namespace IA_TP2_Sudoku_solver
         public int constraints(int[,] state);
         public List<Tuple<int, int>> getNeighbour(int[,] state);
         public bool isConsistent(int v, int[,] state);
-        public int[,][] remove(int val, int[,] state, int[,][] domain, int[] hist);
-        public int[,][] totalUpdate(int v, int[,] state, int[,][] domain);
     }
 }

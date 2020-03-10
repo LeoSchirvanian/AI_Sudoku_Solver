@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 
 namespace IA_TP2_Sudoku_solver.Constraints
@@ -66,6 +65,7 @@ namespace IA_TP2_Sudoku_solver.Constraints
         // --------------------------------------------------------------------------------------------------------------- //
         // --------------------------------------------------------------------------------------------------------------- //
 
+        // Return the number of constraints the cell have (usefull for degree heuristic)
         public int constraints(int[,] state)
         {
             int constr = 0;
@@ -109,41 +109,6 @@ namespace IA_TP2_Sudoku_solver.Constraints
             copyState[target[0], target[1]] = v;
 
             return check(copyState);
-        }
-
-        // --------------------------------------------------------------------------------------------------------------- //
-        // --------------------------------------------------------------------------------------------------------------- //
-
-        public int[,][] remove(int val, int[,] state, int[,][] domain, int[] hist)
-        {
-            for (int i = 0; i < state.GetLength(0); i++)
-            {
-                domain[i, column].Append(val);
-            }
-            domain[target[0], target[1]] = hist;
-            domain = totalUpdate(val, state, domain);
-            return domain;
-        }
-
-        // --------------------------------------------------------------------------------------------------------------- //
-        // --------------------------------------------------------------------------------------------------------------- //
-
-        // Update the row domain
-        public int[,][] totalUpdate(int v, int[,] state, int[,][] domain)
-        {
-            for (int i = 0; i < state.GetLength(0); i++)
-            {
-                for (int j = 0; j < state.GetLength(1); j++)
-                {
-                    if (state[i, j] != 0)
-                    {
-                        domain = update(v, state, domain);
-                    }
-                }
-            }
-
-            return domain;
-
         }
 
         // --------------------------------------------------------------------------------------------------------------- //

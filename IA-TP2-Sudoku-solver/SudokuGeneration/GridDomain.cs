@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace IA_TP2_Sudoku_solver.SudokuGeneration
 {
     // This class represents the domain of possibilites of a grid (domain[i,j,k] : if = 0 impossible value k for cell i,j , if = 1 possible value k for cell i,j)
@@ -109,25 +106,6 @@ namespace IA_TP2_Sudoku_solver.SudokuGeneration
         // --------------------------------------------------------------------------------------------------------------- //
         // --------------------------------------------------------------------------------------------------------------- //
 
-        // This method allows to print the third dimension of the domain attributes
-        public void printGridDomain()
-        {
-            for (int i = 0; i < domain.GetLength(0); i++)
-            {
-                for (int j = 0; j < domain.GetLength(0); j++)
-                {
-                    String line = "";
-                    for (int k = 0; k < domain.GetLength(0); k++)
-                    {
-                        line += domain[i, j, k].ToString() + " ";
-                    }
-                    Console.WriteLine(line + "\n");
-                }
-            }
-        }
-
-        // --------------------------------------------------------------------------------------------------------------- //
-        // --------------------------------------------------------------------------------------------------------------- //
     }
 
 }

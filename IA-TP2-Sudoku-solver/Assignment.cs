@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace IA_TP2_Sudoku_solver
 {
+    // Represents the assignment for backtracking search algorithm
     class Assignment
     {
         // Attributes
         public List<Tuple<int, int, int>> assgn = new List<Tuple<int, int, int>>();
-        int initSize = 0;
 
         // Constructor
         public Assignment(int[,] state)
@@ -26,9 +25,6 @@ namespace IA_TP2_Sudoku_solver
                     }
                 }
             }
-
-            // Size of the initial assignment state
-            initSize = assgn.Count;
         }
 
         // --------------------------------------------------------------------------------------------------------------- //
@@ -69,14 +65,5 @@ namespace IA_TP2_Sudoku_solver
         // --------------------------------------------------------------------------------------------------------------- //
         // --------------------------------------------------------------------------------------------------------------- //
 
-        // Is the assignment consistent
-        public bool isConsistent()
-        {
-
-            return true;
-        }
-
-        // --------------------------------------------------------------------------------------------------------------- //
-        // --------------------------------------------------------------------------------------------------------------- //
     }
 }

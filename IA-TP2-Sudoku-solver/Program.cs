@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 
 namespace IA_TP2_Sudoku_solver
 {
